@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task9</title>
+    <link rel="stylesheet" href="task9.css">
+</head>
+<body>
+<table class="input" id="input">
+    <tr>
+        <td>
+            <label for="types" class="type">Choose type:</label>
+            <select id="types" class="types" name="types">
+                <option value="primitiv">Primitiv</option>
+                <option value="horizon">Horizonal</option>
+                <option value="vertical">Vertical</option>
+                <option value="spiral">Spiral</option>
+            </select>
+        </td>
+        <td>
+            <input type="text" class="row" id="row" placeholder="Row">
+        </td>
+        <td>
+            <input type="text" class="column" id="column" placeholder="Column">
+        </td>
+        <td>
+            <button class="ok" id="ok" onclick="ok()">Ok</button>
+        </td>
+    </tr>
+</table>
+<script>
+    var body = document.getElementsByTagName("body")[0];
+
+    function generateMyCellId(line, cell) {
+        return "tr" + line +  "num" + cell;
+    }
+
+    function createtable(row, column){
+        var table = document.createElement("table");
+        table.setAttribute("class", "table");
+        body.appendChild(table);
+
+        for(var i = 0; i < row; i++){
+            var tr = document.createElement("tr");
+            table.appendChild(tr);
+            tr.id = "tr" + i;
+
+
+            for(var j = 0; j < column; j++) {
+                var td = document.createElement("td");
+                tr.appendChild(td);
+                var input = document.createElement("INPUT");
+                input.setAttribute("type", "text");
+                input.setAttribute("id", generateMyCellId(i, j));
+                input.setAttribute("class", "num");
+                input.setAttribute("disabled", "true");
+                td.appendChild(input);
+            }
+        }
+    }
+
+//primitiv
+
+    function primitiv(row, column) {
+        var a = 0;
+        var b = -1;
+        for (var p = 1; p <= row * column; p++) {
+            if (p % column !== 0) {
+                b += 1;
+                document.getElementById(generateMyCellId(a, b)).value = p;
+                //var blue = parseInt((255/row*column) * p );
+                //var red = 255 - parseInt((255/row*column) * p );
+                //document.getElementById(generateMyCellId(a, b)).style.background = "rgb(" + red + ", 0," + blue + ")";
+
+            } else if (p % column === 0) {
+                b += 1;
+                document.getElementById(generateMyCellId(a, b)).value = p;
+
+                //var blue1 = parseInt((255/row*column) * p );
+                //var red1 = 255 - parseInt((255/row*column) * p );
+                //document.getElementById(generateMyCellId(a, b)).style.background = "rgb(" + red1 + ", 0," + blue1 + ")";
+                b = -1;
+                a += 1;
+            }
+        }
+    }
+
+//horizon
+
+    function horizon(row, column){
+        var a = 0;
+        var b = -1;
+        for (var p = 1; p <= row * column; p++) {
+            if (p % column !== 0) {
+                b += 1;
+                document.getElementById(generateMyCellId(a, b)).value = p;
+            } else if (p % column === 0) {
+                b += 1;
+                document.getElementById(generateMyCellId(a, b)).value = p;
+                a += 1;
+                for(b; b >= 0; b--){
+                    p++;
+                    document.getElementById(generateMyCellId(a, b)).value = p;
+                }
+                a += 1;
+            }
+        }
+    }
+
+//vertical
+
+    function vertical(row, column) {
+        var a = -1;
+        var b = 0;
+        for (var p = 1; p <= row * column; p++) {
+            if (p % row !== 0) {
+                a += 1;
+                document.getElementById(generateMyCellId(a, b)).value = p;
+            } else if (p % row === 0) {
+                a += 1;
+                document.getElementById(generateMyCellId(a, b)).value = p;
+                b += 1;
+                for (a; a >= 0; a--) {
+                    p++;
+                    document.getElementById(generateMyCellId(a, b)).value = p;
+                }
+                b += 1;
+            }
+        }
+    }
+
+//spiral
+
+    function spiral(row, column) {
+        var rowstart = 0;
+        var rowend = row - 1;
+        var columnstart = 0;
+        var columnend = column - 1;
+        var tiv = 1;
+
+        while (columnstart <= columnend && rowstart <= rowend) {
+            for (var i = columnstart; i <= columnend; i++) {
+                document.getElementById(generateMyCellId(rowstart, i)).value = tiv;
+                tiv++;
+            }
+            rowstart++;
+
+            for (var p = rowstart; p <= rowend; p++) {
+                document.getElementById(generateMyCellId(p, columnend)).value = tiv;
+                tiv++;
+            }
+            columnend--;
+
+            for (var j = columnend; j >= columnstart; j--) {
+                document.getElementById(generateMyCellId(rowend, j)).value = tiv;
+                tiv++;
+            }
+            rowend--;
+
+            for (var k = rowend; k >= rowstart; k--) {
+                document.getElementById(generateMyCellId(k, columnstart)).value = tiv;
+                tiv++;
+            }
+            columnstart++;
+        }
+    }
+
+
+    function ok(){
+        var row = parseInt(document.getElementById("row").value);
+        var column = parseInt(document.getElementById("column").value);
+
+        createtable(row, column);
+        if(document.getElementById("types").value === "primitiv"){
+            primitiv(row, column);
+        }else if(document.getElementById("types").value === "horizon"){
+            horizon(row, column);
+        }else if(document.getElementById("types").value === "vertical"){
+            vertical(row, column);
+        }else if(document.getElementById("types").value === "spiral"){
+            spiral(row, column);
+        }
+    }
+</script>
+</body>
+</html>
